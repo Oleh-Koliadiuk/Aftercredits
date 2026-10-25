@@ -25,12 +25,6 @@
     />
     <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="assets/favicon/site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="css/main.css" />
     <script src="src/js/i18n.js" defer></script>
     <script src="src/js/config.js" defer></script>
@@ -489,6 +483,16 @@
               ><span data-i18n="status.planned">Planned</span
               ><span class="filter-count">0</span>
             </button>
+            <button
+              type="button"
+              class="status-filter"
+              data-status-filter="dropped"
+              aria-pressed="false"
+            >
+              <span class="status-dot dropped-dot" aria-hidden="true"></span
+              ><span data-i18n="status.dropped">Dropped</span
+              ><span class="filter-count">0</span>
+            </button>
           </div>
 
           <p class="collection-error" id="collection-error" role="alert"></p>
@@ -733,9 +737,7 @@
             </div>
           </div>
           <label class="field-group" id="rating-field"
-            ><span class="field-label"
-              ><span data-i18n="yourRating">YOUR RATING</span>
-              <small data-i18n="optional">OPTIONAL</small></span
+            ><span class="field-label" data-i18n="yourRating">YOUR RATING</span
             ><span class="rating-input"
               ><input
                 name="rating"
@@ -782,13 +784,33 @@
               <option value="planned" data-i18n="status.planned">
                 Planned
               </option>
+              <option value="dropped" data-i18n="status.dropped">
+                Dropped
+              </option>
             </select>
           </label>
-          <p class="form-error" id="form-error" role="alert"></p>
           <button class="add-button" type="submit">
             <span data-i18n="addToCollection">Add to collection</span>
             <span aria-hidden="true">↗</span>
           </button>
+          <label class="field-group drop-reason-field" id="drop-reason-field">
+            <span
+              class="field-label"
+              id="drop-reason-label"
+              data-i18n="droppedReasonLabel"
+              >WHY DIDN’T YOU WANT TO WATCH THIS?</span
+            >
+            <textarea
+              class="text-input"
+              id="drop-reason"
+              name="dropReason"
+              rows="3"
+              maxlength="2000"
+              placeholder="Tell us why you dropped this anime..."
+              data-i18n-placeholder="dropReasonPlaceholder"
+            ></textarea>
+          </label>
+          <p class="form-error" id="form-error" role="alert"></p>
         </footer>
       </form>
     </dialog>

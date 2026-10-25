@@ -22,6 +22,7 @@ def public_entry(entry: AnimeEntry) -> dict:
         "watchedAt": entry.watched_at.isoformat() if entry.watched_at else "",
         "status": entry.status,
         "notes": entry.notes,
+        "dropReason": entry.drop_reason,
         "malId": entry.mal_id,
         "imageUrl": entry.image_url,
     }
@@ -41,10 +42,11 @@ def create_entry(db: Session, user: User, item: AnimeEntryInput) -> AnimeEntry:
         user_id=user.id,
         title=item.title,
         title_key=title_key,
-        rating=item.rating,
-        watched_at=item.watchedAt,
+        rating=item.rating if item.status == "watched" else None,
+        watched_at=item.watchedAt if item.status == "watched" else None,
         status=item.status,
         notes=item.notes.strip(),
+        drop_reason=item.dropReason.strip() if item.status == "dropped" else "",
         mal_id=item.malId,
         image_url=item.imageUrl,
         created_at=time.time(),
@@ -107,10 +109,11 @@ def import_collection(
                 user_id=user.id,
                 title=item.title,
                 title_key=title_key,
-                rating=item.rating,
-                watched_at=item.watchedAt,
+                rating=item.rating if item.status == "watched" else None,
+                watched_at=item.watchedAt if item.status == "watched" else None,
                 status=item.status,
                 notes=item.notes.strip(),
+                drop_reason=item.dropReason.strip() if item.status == "dropped" else "",
                 mal_id=item.malId,
                 image_url=item.imageUrl,
                 created_at=time.time() - index,
@@ -142,12 +145,16 @@ def update_entry(
     fields = changes.model_fields_set
     if "status" in fields and changes.status is not None:
         entry.status = changes.status
+        if changes.status != "dropped":
+            entry.drop_reason = ""
     if "notes" in fields and changes.notes is not None:
         entry.notes = changes.notes.strip()
+    if "dropReason" in fields and changes.dropReason is not None:
+        entry.drop_reason = changes.dropReason.strip()
     if "rating" in fields:
-        entry.rating = changes.rating
+        entry.rating = changes.rating if entry.status == "watched" else None
     if "watchedAt" in fields:
-        entry.watched_at = changes.watchedAt
+        entry.watched_at = changes.watchedAt if entry.status == "watched" else None
     db.commit()
     db.refresh(entry)
     return public_entry(entry)

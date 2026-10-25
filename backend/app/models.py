@@ -52,6 +52,7 @@ class AnimeEntry(Base):
     watched_at: Mapped[date | None] = mapped_column(Date, nullable=True)
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="watched")
     notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    drop_reason: Mapped[str] = mapped_column(Text, nullable=False, default="")
     mal_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     image_url: Mapped[str] = mapped_column(Text, nullable=False, default="")
     created_at: Mapped[float] = mapped_column(Float, nullable=False)

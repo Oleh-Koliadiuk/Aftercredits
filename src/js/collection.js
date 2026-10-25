@@ -1,11 +1,11 @@
 window.AnimeTracker = window.AnimeTracker || {};
 
 (() => {
-  const STATUSES = ["watched", "watching", "planned"];
+  const STATUSES = ["watched", "watching", "planned", "dropped"];
 
   function add(
     items,
-    { title, rating, watchedAt, malId, imageUrl, status, notes },
+    { title, rating, watchedAt, malId, imageUrl, status, notes, dropReason },
   ) {
     const i18n = window.AnimeTracker.i18n;
     const normalizedTitle = title.trim();
@@ -38,6 +38,10 @@ window.AnimeTracker = window.AnimeTracker || {};
         watchedAt,
         status: STATUSES.includes(status) ? status : "watched",
         notes: typeof notes === "string" ? notes.trim().slice(0, 2000) : "",
+        dropReason:
+          typeof dropReason === "string"
+            ? dropReason.trim().slice(0, 2000)
+            : "",
         malId: malId || null,
         imageUrl: imageUrl || "",
       },
@@ -51,7 +55,28 @@ window.AnimeTracker = window.AnimeTracker || {};
 
   function updateStatus(items, id, status) {
     if (!STATUSES.includes(status)) return items;
-    return items.map((item) => (item.id === id ? { ...item, status } : item));
+    return items.map((item) =>
+      item.id === id
+        ? {
+            ...item,
+            status,
+            dropReason: item.dropReason || "",
+          }
+        : item,
+    );
+  }
+
+  function updateDropReason(items, id, dropReason) {
+    return items.map((item) =>
+      item.id === id
+        ? {
+            ...item,
+            dropReason: String(dropReason || "")
+              .trim()
+              .slice(0, 2000),
+          }
+        : item,
+    );
   }
 
   function updateNotes(items, id, notes) {
@@ -94,6 +119,7 @@ window.AnimeTracker = window.AnimeTracker || {};
         watched: items.filter((item) => item.status === "watched").length,
         watching: items.filter((item) => item.status === "watching").length,
         planned: items.filter((item) => item.status === "planned").length,
+        dropped: items.filter((item) => item.status === "dropped").length,
       },
       averageRating: ratings.length
         ? (
@@ -108,6 +134,7 @@ window.AnimeTracker = window.AnimeTracker || {};
     add,
     remove,
     updateStatus,
+    updateDropReason,
     updateNotes,
     filter,
     getStats,

@@ -56,7 +56,7 @@ window.AnimeTracker = window.AnimeTracker || {};
       "aria-label",
       window.AnimeTracker.i18n.t("statusForTitle", { title: item.title }),
     );
-    for (const statusKey of ["watched", "watching", "planned"]) {
+    for (const statusKey of ["watched", "watching", "planned", "dropped"]) {
       const option = document.createElement("option");
       option.value = statusKey;
       option.textContent = window.AnimeTracker.i18n.t(`status.${statusKey}`);

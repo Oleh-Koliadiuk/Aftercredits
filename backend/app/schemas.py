@@ -5,7 +5,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-Status = Literal["watched", "watching", "planned"]
+Status = Literal["watched", "watching", "planned", "dropped"]
 
 
 class Credentials(BaseModel):
@@ -43,6 +43,7 @@ class AnimeEntryInput(BaseModel):
     watchedAt: date | None = None
     status: Status = "watched"
     notes: str = Field(default="", max_length=2000)
+    dropReason: str = Field(default="", max_length=2000)
     malId: int | None = Field(default=None, ge=1)
     imageUrl: str = Field(default="", max_length=2048)
 
@@ -93,6 +94,7 @@ class AnimeEntryUpdate(BaseModel):
     watchedAt: date | None = None
     status: Status | None = None
     notes: str | None = Field(default=None, max_length=2000)
+    dropReason: str | None = Field(default=None, max_length=2000)
 
     @field_validator("rating")
     @classmethod

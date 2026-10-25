@@ -25,6 +25,7 @@ async def lifespan(_: FastAPI):
     inspector = inspect(engine)
     user_columns = {column["name"] for column in inspector.get_columns("users")}
     added_joined_at = "joined_at" not in user_columns
+    entry_columns = {column["name"] for column in inspector.get_columns("anime_entries")}
     with engine.begin() as connection:
         if "email" not in user_columns:
             connection.execute(text("ALTER TABLE users ADD COLUMN email VARCHAR(254)"))
@@ -37,6 +38,10 @@ async def lifespan(_: FastAPI):
             )
             connection.execute(
                 text("UPDATE users SET joined_at = '2026-10-20 00:00:00' WHERE id = 2")
+            )
+        if "drop_reason" not in entry_columns:
+            connection.execute(
+                text("ALTER TABLE anime_entries ADD COLUMN drop_reason TEXT NOT NULL DEFAULT ''")
             )
     yield
 

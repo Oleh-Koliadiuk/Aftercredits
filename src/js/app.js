@@ -21,6 +21,7 @@
   const animeStatus = document.querySelector("#anime-status");
   const ratingField = document.querySelector("#rating-field");
   const watchedDateField = document.querySelector("#watched-date-field");
+  const droppedReasonField = document.querySelector("#drop-reason-field");
   let isRegistering = false;
   let activeUser = "";
   let profileData = null;
@@ -63,8 +64,22 @@
 
   function updateCompletionFields() {
     const isWatched = animeStatus.value === "watched";
+    const isDropped = animeStatus.value === "dropped";
+    const reasonLabel = document.querySelector("#drop-reason-label");
+    const dropReasonInput = document.querySelector("#drop-reason");
     ratingField.hidden = !isWatched;
     watchedDateField.hidden = !isWatched;
+    droppedReasonField.hidden = false;
+    reasonLabel.textContent = isDropped
+      ? i18n.t("droppedReasonLabel")
+      : i18n.t("noteLabel");
+    reasonLabel.setAttribute(
+      "data-i18n",
+      isDropped ? "droppedReasonLabel" : "noteLabel",
+    );
+    dropReasonInput.placeholder = isDropped
+      ? i18n.t("dropReasonPlaceholder")
+      : i18n.t("notesPlaceholder");
     document
       .querySelector("#selection-panel")
       .classList.toggle("without-completion-fields", !isWatched);
@@ -792,17 +807,25 @@
       try {
         if (!selectedAnime) throw new Error(i18n.t("chooseAnime"));
         const status = String(data.get("status") || "watched");
+        const ratingValue = String(data.get("rating") || "").trim();
+        const watchedAtValue = String(data.get("watchedAt") || "").trim();
+        const textareaValue = String(data.get("dropReason") || "").trim();
+        const noteText = status === "dropped" ? "" : textareaValue;
+        const dropReason = status === "dropped" ? textareaValue : "";
+
         if (status === "watched" && !validateRating())
           throw new Error(i18n.t("ratingError"));
+
         const [entry] = collection.add(animeList, {
           title: selectedAnime.title,
-          rating:
-            status === "watched" ? String(data.get("rating") || "").trim() : "",
+          rating: status === "watched" && ratingValue ? ratingValue : null,
           watchedAt:
-            status === "watched" ? String(data.get("watchedAt") || "") : "",
+            status === "watched" && watchedAtValue ? watchedAtValue : null,
           malId: selectedAnime?.id,
           imageUrl: selectedAnime?.imageUrl,
           status,
+          notes: noteText,
+          dropReason,
         });
         const savedEntry = await storage.add(entry);
         animeList = [savedEntry, ...animeList];

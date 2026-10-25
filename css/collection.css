@@ -47,6 +47,7 @@ h1 {
   color: #fff6f6;
   cursor: pointer;
   font-size: 11px;
+  line-height: 1;
   font-weight: 700;
   box-shadow: 0 12px 26px rgba(255, 77, 77, 0.28);
   transition:
@@ -61,8 +62,21 @@ h1 {
 .add-button:active {
   transform: translateY(0) scale(0.98);
 }
-.add-button > span {
-  font-size: 16px;
+.selection-panel > .add-button {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.selection-panel > .add-button > span:first-child {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 700;
+}
+.selection-panel > .add-button > span:last-child {
+  font-size: 13px;
+  line-height: 1;
   font-weight: 400;
 }
 .stats-row {
@@ -99,7 +113,7 @@ h1 {
 }
 .stat-card strong {
   color: #e5e9e0;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
   font-size: 22px;
   font-weight: 400;
   letter-spacing: -0.8px;
@@ -341,6 +355,15 @@ h2 {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.card-drop-reason {
+  margin: 9px 0 0;
+  color: #d2b3aa;
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 .delete-button {
   border: 0;
   background: transparent;
@@ -369,6 +392,9 @@ h2 {
 }
 .status-planned {
   color: #e87979;
+}
+.status-dropped {
+  color: #d56a65;
 }
 .card-note {
   overflow: hidden;

@@ -44,7 +44,7 @@ body {
   min-height: 100vh;
   min-height: 100svh;
   color: var(--text);
-  font-family: "Manrope", sans-serif;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 14px;
   background:
     radial-gradient(

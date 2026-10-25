@@ -46,7 +46,7 @@
 .field-label,
 .breadcrumb,
 .empty-kicker {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
   letter-spacing: 0.09em;
 }
 .nav-label {
