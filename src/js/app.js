@@ -30,6 +30,7 @@
   let selectedAnime = null;
   let statusFilter = "all";
   let editingNoteId = null;
+  let statusEditId = null;
   let calendarMonth = new Date();
   let searchTimer = 0;
   let searchController = null;
@@ -303,10 +304,61 @@
     render();
   }
 
+  function openStatusCompletionDialog(item) {
+    statusEditId = item.id;
+    document.querySelector("#anime-form").reset();
+    selectedAnime = {
+      title: item.title,
+      id: item.malId || null,
+      imageUrl: item.imageUrl || "",
+      year: "",
+      type: "",
+      episodes: null,
+    };
+    document.querySelector("#anime-title").value = item.title;
+    document.querySelector("#selected-title").textContent = item.title;
+    document.querySelector("#selected-meta").textContent = "";
+    const poster = document.querySelector("#selected-poster");
+    poster.hidden = !item.imageUrl;
+    poster.src = item.imageUrl || "";
+    document.querySelector("#selection-panel").hidden = false;
+    document.querySelector("#search-start").hidden = true;
+    document.querySelector("#clear-search").hidden = true;
+    document.querySelector("#manual-title-button").hidden = true;
+    document.querySelector("#anime-status").value = "watched";
+    document.querySelector("#rating-field input[name='rating']").value =
+      item.rating ?? "";
+    document.querySelector("#watched-at-value").value = item.watchedAt || "";
+    document.querySelector("#date-display").textContent = item.watchedAt
+      ? formatDate(item.watchedAt)
+      : "—";
+    document.querySelector("#drop-reason").value = item.notes || "";
+    document.querySelector("#form-error").textContent = "";
+    updateCompletionFields();
+    document.querySelector("#anime-dialog").showModal();
+    setSearchStatus("");
+  }
+
   async function changeStatus(id, status) {
+    const item = animeList.find((entry) => entry.id === id);
+    if (
+      status === "watched" &&
+      item &&
+      item.status !== "watched" &&
+      (!item.rating || !item.watchedAt || !item.notes)
+    ) {
+      openStatusCompletionDialog(item);
+      return;
+    }
+
     try {
-      await storage.update(id, { status });
+      const updated = await storage.update(id, { status });
       animeList = collection.updateStatus(animeList, id, status);
+      if (updated && updated.notes !== undefined) {
+        animeList = animeList.map((entry) =>
+          entry.id === id ? { ...entry, ...updated } : entry,
+        );
+      }
       collectionError = "";
     } catch (error) {
       collectionError = error.message;
@@ -554,6 +606,7 @@
   document.querySelector("#anime-dialog").addEventListener("close", () => {
     if (searchController) searchController.abort();
     searchController = null;
+    statusEditId = null;
   });
   document.querySelector("#filter-input").addEventListener("input", render);
   document.querySelectorAll("[data-status-filter]").forEach((button) => {
@@ -815,6 +868,25 @@
 
         if (status === "watched" && !validateRating())
           throw new Error(i18n.t("ratingError"));
+
+        if (statusEditId) {
+          const savedEntry = await storage.update(statusEditId, {
+            status,
+            rating:
+              status === "watched" && ratingValue ? Number(ratingValue) : null,
+            watchedAt:
+              status === "watched" && watchedAtValue ? watchedAtValue : null,
+            notes: noteText,
+            dropReason,
+          });
+          animeList = animeList.map((entry) =>
+            entry.id === statusEditId ? { ...entry, ...savedEntry } : entry,
+          );
+          statusEditId = null;
+          document.querySelector("#anime-dialog").close();
+          render();
+          return;
+        }
 
         const [entry] = collection.add(animeList, {
           title: selectedAnime.title,
