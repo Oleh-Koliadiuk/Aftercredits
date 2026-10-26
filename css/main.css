@@ -1,4 +1,3 @@
-/* Styles are split by UI area; keep imports in cascade order. */
 @import url("./tokens.css");
 @import url("./shell.css");
 @import url("./collection.css");

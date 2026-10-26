@@ -55,5 +55,8 @@ class AnimeEntry(Base):
     drop_reason: Mapped[str] = mapped_column(Text, nullable=False, default="")
     mal_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     image_url: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    type: Mapped[str] = mapped_column(String(32), nullable=False, default="")
+    year: Mapped[str] = mapped_column(String(16), nullable=False, default="")
+    episodes: Mapped[str] = mapped_column(String(32), nullable=False, default="")
     created_at: Mapped[float] = mapped_column(Float, nullable=False)
     user: Mapped[User] = relationship(back_populates="entries")

@@ -46,6 +46,9 @@ class AnimeEntryInput(BaseModel):
     dropReason: str = Field(default="", max_length=2000)
     malId: int | None = Field(default=None, ge=1)
     imageUrl: str = Field(default="", max_length=2048)
+    type: str = Field(default="", max_length=32)
+    year: str = Field(default="", max_length=16)
+    episodes: str = Field(default="", max_length=32)
 
     @field_validator("id")
     @classmethod
@@ -95,6 +98,9 @@ class AnimeEntryUpdate(BaseModel):
     status: Status | None = None
     notes: str | None = Field(default=None, max_length=2000)
     dropReason: str | None = Field(default=None, max_length=2000)
+    type: str | None = Field(default=None, max_length=32)
+    year: str | None = Field(default=None, max_length=16)
+    episodes: str | None = Field(default=None, max_length=32)
 
     @field_validator("rating")
     @classmethod

@@ -92,3 +92,33 @@
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+.anime-card:focus:not(:focus-visible),
+.anime-card:focus-visible,
+button:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+.close-button:focus:not(:focus-visible),
+.cancel-button:focus:not(:focus-visible),
+.calendar-nav:focus:not(:focus-visible),
+.calendar-day:focus:not(:focus-visible),
+.brand:focus:not(:focus-visible),
+.search-header .brand:focus:not(:focus-visible),
+.logout-button:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input:focus-visible,
+.close-button:focus-visible,
+.cancel-button:focus-visible,
+.calendar-nav:focus-visible,
+.calendar-day:focus-visible,
+.brand:focus-visible,
+.search-header .brand:focus-visible,
+.logout-button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}

@@ -163,6 +163,26 @@
     element.setAttribute("aria-label", username || "?");
   }
 
+  function setProfileFieldEditable(fieldId, editable) {
+    const field = document.querySelector(`#${fieldId}`);
+    if (!field) return;
+    field.readOnly = !editable;
+    field.classList.toggle("is-editable", editable);
+    field.setAttribute("aria-readonly", String(!editable));
+
+    const button = document.querySelector(
+      `.field-edit-button[data-edit-field="${fieldId}"]`,
+    );
+    if (button) {
+      button.textContent = editable ? "✕" : "✎";
+      button.setAttribute("aria-label", editable ? "Close editing" : "Edit");
+      button.title = editable ? "Close editing" : "Edit";
+      button.classList.toggle("is-active", editable);
+    }
+
+    if (editable) field.focus();
+  }
+
   function renderProfile({ syncFields = false } = {}) {
     if (!profileData) return;
     const username = profileData.username || activeUser;
@@ -171,6 +191,8 @@
     if (syncFields) {
       document.querySelector("#profile-username").value = username;
       document.querySelector("#profile-email").value = profileData.email || "";
+      setProfileFieldEditable("profile-username", false);
+      setProfileFieldEditable("profile-email", false);
     }
     document.querySelector("#profile-title-count").textContent = String(
       animeList.length,
@@ -290,7 +312,56 @@
       removeAnime,
       changeStatus,
       editNotes,
+      openAnimeDetails,
     );
+  }
+
+  function openAnimeDetails(item) {
+    const detailsDialog = document.querySelector("#details-dialog");
+    const detailsTitle = document.querySelector("#details-title");
+    const detailsPoster = document.querySelector("#details-poster");
+    const detailsMeta = document.querySelector("#details-meta");
+    const detailsStatus = document.querySelector("#details-status");
+    const detailsRating = document.querySelector("#details-rating");
+    const detailsDate = document.querySelector("#details-date");
+    const detailsType = document.querySelector("#details-type");
+    const detailsYear = document.querySelector("#details-year");
+    const detailsEpisodes = document.querySelector("#details-episodes");
+    const detailsNotes = document.querySelector("#details-notes");
+    const detailsDropReason = document.querySelector("#details-drop-reason");
+
+    detailsTitle.textContent = item.title;
+    detailsMeta.textContent = item.status
+      ? i18n.t(`status.${item.status}`)
+      : "";
+    detailsPoster.src = item.imageUrl || "";
+    detailsPoster.hidden = !item.imageUrl;
+    detailsStatus.textContent = item.status
+      ? i18n.t(`status.${item.status}`)
+      : "—";
+    detailsRating.textContent = item.rating
+      ? `★ ${Number(item.rating).toFixed(1)} / 10`
+      : "—";
+    detailsDate.textContent = item.watchedAt
+      ? new Intl.DateTimeFormat(i18n.language, {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          timeZone: "UTC",
+        }).format(new Date(`${item.watchedAt}T00:00:00Z`))
+      : "—";
+    detailsType.textContent = item.type
+      ? i18n.t(`format.${item.type}`) || item.type
+      : "—";
+    detailsYear.textContent = item.year || "—";
+    detailsEpisodes.textContent = item.episodes
+      ? i18n.t("episodes", { count: item.episodes })
+      : "—";
+    detailsNotes.textContent = item.notes || "No comment yet.";
+    detailsDropReason.textContent = item.dropReason || "—";
+    detailsDropReason.parentElement.hidden =
+      !item.dropReason || item.status !== "dropped";
+    detailsDialog.showModal();
   }
 
   async function removeAnime(id) {
@@ -311,13 +382,14 @@
       title: item.title,
       id: item.malId || null,
       imageUrl: item.imageUrl || "",
-      year: "",
-      type: "",
-      episodes: null,
+      year: item.year || "",
+      type: item.type || "",
+      episodes: item.episodes ?? null,
     };
     document.querySelector("#anime-title").value = item.title;
     document.querySelector("#selected-title").textContent = item.title;
-    document.querySelector("#selected-meta").textContent = "";
+    document.querySelector("#selected-meta").textContent =
+      formatAnimeMeta(selectedAnime);
     const poster = document.querySelector("#selected-poster");
     poster.hidden = !item.imageUrl;
     poster.src = item.imageUrl || "";
@@ -332,7 +404,7 @@
     document.querySelector("#date-display").textContent = item.watchedAt
       ? formatDate(item.watchedAt)
       : "—";
-    document.querySelector("#drop-reason").value = item.notes || "";
+    document.querySelector("#drop-reason").value = "";
     document.querySelector("#form-error").textContent = "";
     updateCompletionFields();
     document.querySelector("#anime-dialog").showModal();
@@ -345,7 +417,7 @@
       status === "watched" &&
       item &&
       item.status !== "watched" &&
-      (!item.rating || !item.watchedAt || !item.notes)
+      (!item.rating || !item.watchedAt)
     ) {
       openStatusCompletionDialog(item);
       return;
@@ -552,6 +624,19 @@
     avatarDraft = null;
     renderProfile();
   });
+  document.querySelectorAll(".field-edit-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const fieldId = button.dataset.editField;
+      const field = fieldId ? document.querySelector(`#${fieldId}`) : null;
+      if (!field) return;
+      const willEdit = field.readOnly;
+      if (willEdit) {
+        setProfileFieldEditable(fieldId, true);
+      } else {
+        setProfileFieldEditable(fieldId, false);
+      }
+    });
+  });
   document
     .querySelector("#profile-form")
     .addEventListener("submit", async (event) => {
@@ -602,6 +687,11 @@
     .querySelector("#close-form")
     .addEventListener("click", () =>
       document.querySelector("#anime-dialog").close(),
+    );
+  document
+    .querySelector("#details-close")
+    .addEventListener("click", () =>
+      document.querySelector("#details-dialog").close(),
     );
   document.querySelector("#anime-dialog").addEventListener("close", () => {
     if (searchController) searchController.abort();
@@ -898,6 +988,9 @@
           status,
           notes: noteText,
           dropReason,
+          type: selectedAnime?.type || "",
+          year: selectedAnime?.year || "",
+          episodes: selectedAnime?.episodes || "",
         });
         const savedEntry = await storage.add(entry);
         animeList = [savedEntry, ...animeList];

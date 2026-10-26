@@ -21,6 +21,73 @@
 .anime-dialog[open]::backdrop {
   animation: backdrop-in 180ms ease-out both;
 }
+.details-dialog {
+  width: min(680px, calc(100% - 32px));
+  padding: 24px;
+}
+.details-layout {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.detail-poster {
+  width: 160px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #2a2b2d;
+}
+.detail-body {
+  min-width: 0;
+}
+.detail-body h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(20px, 3vw, 28px);
+  line-height: 1.2;
+}
+.detail-meta {
+  margin: 6px 0 14px;
+  color: #bbbcaf;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.detail-grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a5aaa1;
+  font-size: 11px;
+}
+.detail-row strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.detail-section {
+  margin-top: 18px;
+}
+.detail-text {
+  margin: 8px 0 0;
+  color: #e1e4de;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.details-dialog .field-label {
+  margin-bottom: 0;
+}
+.details-dialog .close-button {
+  align-self: flex-start;
+}
 .notes-dialog {
   width: min(600px, calc(100% - 32px));
   padding: var(--space-4);

@@ -9,7 +9,7 @@
       content="A quiet place to keep track of the anime you've watched."
       data-i18n-content="metaDescription"
     />
-    <title>Anime Tracker — Your collection</title>
+    <title>Aftercredits - Anime Tracker</title>
     <link rel="icon" href="assets/favicon/favicon.ico" sizes="any" />
     <link
       rel="icon"
@@ -575,17 +575,30 @@
               <label class="profile-field" for="profile-username">
                 <span class="field-label" data-i18n="profile.username"
                   >USERNAME</span
-                ><input
-                  class="text-input"
-                  id="profile-username"
-                  type="text"
-                  minlength="3"
-                  maxlength="30"
-                  pattern="[A-Za-z0-9_.-]+"
-                  autocomplete="username"
-                  required
-                  data-i18n-title="profile.usernameHint"
-                />
+                >
+                <div class="profile-input-wrap">
+                  <input
+                    class="text-input"
+                    id="profile-username"
+                    type="text"
+                    minlength="3"
+                    maxlength="30"
+                    pattern="[A-Za-z0-9_.-]+"
+                    autocomplete="username"
+                    required
+                    readonly
+                    data-i18n-title="profile.usernameHint"
+                  />
+                  <button
+                    class="field-edit-button"
+                    type="button"
+                    data-edit-field="profile-username"
+                    aria-label="Edit username"
+                    title="Edit username"
+                  >
+                    ✎
+                  </button>
+                </div>
               </label>
               <div class="profile-field">
                 <span class="field-label" data-i18n="profile.joined"
@@ -598,16 +611,31 @@
                 ><strong id="profile-title-count">0</strong>
               </div>
               <label class="profile-email-field"
-                ><span class="field-label" data-i18n="profile.email">EMAIL</span
-                ><input
-                  class="text-input"
-                  id="profile-email"
-                  type="email"
-                  maxlength="254"
-                  autocomplete="email"
-                  placeholder="name@example.com"
-                  data-i18n-placeholder="profile.emailPlaceholder"
-              /></label>
+                ><span class="field-label" data-i18n="profile.email"
+                  >EMAIL</span
+                >
+                <div class="profile-input-wrap profile-email-wrap">
+                  <input
+                    class="text-input"
+                    id="profile-email"
+                    type="email"
+                    maxlength="254"
+                    autocomplete="email"
+                    placeholder="name@example.com"
+                    readonly
+                    data-i18n-placeholder="profile.emailPlaceholder"
+                  />
+                  <button
+                    class="field-edit-button"
+                    type="button"
+                    data-edit-field="profile-email"
+                    aria-label="Edit email"
+                    title="Edit email"
+                  >
+                    ✎
+                  </button>
+                </div>
+              </label>
             </div>
             <p
               class="profile-message"
@@ -942,6 +970,71 @@
         </button>
       </div>
     </dialog>
+    <dialog
+      id="details-dialog"
+      class="anime-dialog details-dialog"
+      aria-labelledby="details-title"
+    >
+      <div class="dialog-top">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow-line"></span
+            ><span data-i18n="details">DETAILS</span>
+          </div>
+          <h2 id="details-heading">Anime details</h2>
+        </div>
+        <button
+          class="close-button"
+          type="button"
+          id="details-close"
+          aria-label="Close details"
+        >
+          ×
+        </button>
+      </div>
+      <div class="details-layout">
+        <img id="details-poster" class="detail-poster" alt="" hidden />
+        <div class="detail-body">
+          <h3 id="details-title"></h3>
+          <p id="details-meta" class="detail-meta"></p>
+          <div class="detail-grid">
+            <div class="detail-row">
+              <span>Status</span>
+              <strong id="details-status">—</strong>
+            </div>
+            <div class="detail-row">
+              <span>Rating</span>
+              <strong id="details-rating">—</strong>
+            </div>
+            <div class="detail-row">
+              <span>Type</span>
+              <strong id="details-type">—</strong>
+            </div>
+            <div class="detail-row">
+              <span>Episodes</span>
+              <strong id="details-episodes">—</strong>
+            </div>
+            <div class="detail-row">
+              <span>Year</span>
+              <strong id="details-year">—</strong>
+            </div>
+            <div class="detail-row">
+              <span>Date finished</span>
+              <strong id="details-date">—</strong>
+            </div>
+          </div>
+          <div class="detail-section">
+            <span class="field-label">COMMENT</span>
+            <p id="details-notes" class="detail-text">No comment yet.</p>
+          </div>
+          <div class="detail-section detail-drop-reason-wrap" hidden>
+            <span class="field-label">WHY DIDN’T YOU WANT TO WATCH THIS?</span>
+            <p id="details-drop-reason" class="detail-text">—</p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
     <dialog
       id="notes-dialog"
       class="anime-dialog notes-dialog"

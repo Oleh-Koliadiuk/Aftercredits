@@ -11,9 +11,28 @@ window.AnimeTracker = window.AnimeTracker || {};
     }).format(new Date(`${value}T00:00:00Z`));
   }
 
-  function createCard(item, onRemove, onChangeStatus, onEditNotes) {
+  function createCard(
+    item,
+    onRemove,
+    onChangeStatus,
+    onEditNotes,
+    onOpenDetails,
+  ) {
     const card = document.createElement("article");
     card.className = "anime-card";
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `Open details for ${item.title}`);
+    card.addEventListener("click", (event) => {
+      if (event.target.closest("button, select, textarea, input")) return;
+      onOpenDetails(item);
+    });
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onOpenDetails(item);
+      }
+    });
     const art = document.createElement("div");
     art.className = "card-art";
     art.setAttribute("aria-hidden", "true");
@@ -101,6 +120,7 @@ window.AnimeTracker = window.AnimeTracker || {};
     onRemove,
     onChangeStatus,
     onEditNotes,
+    onOpenDetails,
   ) {
     const grid = document.querySelector("#anime-grid");
     const emptyState = document.querySelector("#empty-state");
@@ -111,7 +131,7 @@ window.AnimeTracker = window.AnimeTracker || {};
     );
     grid.replaceChildren(
       ...visibleItems.map((item) =>
-        createCard(item, onRemove, onChangeStatus, onEditNotes),
+        createCard(item, onRemove, onChangeStatus, onEditNotes, onOpenDetails),
       ),
     );
     emptyState.hidden = visibleItems.length > 0;

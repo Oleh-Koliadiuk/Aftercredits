@@ -154,21 +154,60 @@
 .profile-email-field {
   grid-column: 1 / -1;
 }
-.profile-email-field .text-input {
-  width: min(100%, 480px);
+.profile-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.profile-field .text-input {
-  width: 100%;
+.profile-email-wrap {
+  width: min(100%, 480px);
 }
 .profile-field .text-input,
 .profile-email-field .text-input {
+  width: 100%;
   background: var(--bg);
   border: 1px solid var(--border);
   color: #ffffff;
 }
-.profile-field .text-input:focus,
-.profile-email-field .text-input:focus {
+.profile-field .text-input:focus-visible,
+.profile-email-field .text-input:focus-visible,
+.profile-field .text-input.is-editable,
+.profile-email-field .text-input.is-editable {
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2);
+}
+.profile-field .text-input:focus:not(:focus-visible),
+.profile-email-field .text-input:focus:not(:focus-visible) {
+  border-color: var(--border);
+  box-shadow: none;
+}
+.field-edit-button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 10px;
+  background: rgba(248, 113, 113, 0.08);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 180ms ease;
+}
+.field-edit-button:hover {
+  border-color: var(--accent);
+  background: rgba(248, 113, 113, 0.16);
+  transform: translateY(-1px);
+}
+.field-edit-button.is-active {
+  border-color: var(--accent);
+  background: rgba(248, 113, 113, 0.2);
+  color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.12);
+}
+.field-edit-button:focus-visible {
+  outline: none;
   box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2);
 }
 .profile-message {

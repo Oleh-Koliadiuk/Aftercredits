@@ -5,7 +5,19 @@ window.AnimeTracker = window.AnimeTracker || {};
 
   function add(
     items,
-    { title, rating, watchedAt, malId, imageUrl, status, notes, dropReason },
+    {
+      title,
+      rating,
+      watchedAt,
+      malId,
+      imageUrl,
+      status,
+      notes,
+      dropReason,
+      type,
+      year,
+      episodes,
+    },
   ) {
     const i18n = window.AnimeTracker.i18n;
     const normalizedTitle = title.trim();
@@ -44,6 +56,12 @@ window.AnimeTracker = window.AnimeTracker || {};
             : "",
         malId: malId || null,
         imageUrl: imageUrl || "",
+        type: typeof type === "string" ? type.trim().slice(0, 32) : "",
+        year: typeof year === "string" ? year.trim().slice(0, 16) : "",
+        episodes:
+          typeof episodes === "string" || typeof episodes === "number"
+            ? String(episodes).trim().slice(0, 32)
+            : "",
       },
       ...items,
     ];

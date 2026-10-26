@@ -9,9 +9,15 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  border: 0;
+  border: none;
   border-radius: 0;
+  outline: none;
   background: var(--bg);
+  box-shadow: none;
+}
+.search-dialog[open] {
+  border: none;
+  outline: none;
   box-shadow: none;
 }
 .search-dialog::backdrop {

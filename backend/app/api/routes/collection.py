@@ -25,6 +25,9 @@ def public_entry(entry: AnimeEntry) -> dict:
         "dropReason": entry.drop_reason,
         "malId": entry.mal_id,
         "imageUrl": entry.image_url,
+        "type": entry.type,
+        "year": entry.year,
+        "episodes": entry.episodes,
     }
 
 
@@ -49,6 +52,9 @@ def create_entry(db: Session, user: User, item: AnimeEntryInput) -> AnimeEntry:
         drop_reason=item.dropReason.strip() if item.status == "dropped" else "",
         mal_id=item.malId,
         image_url=item.imageUrl,
+        type=item.type,
+        year=item.year,
+        episodes=item.episodes,
         created_at=time.time(),
     )
     db.add(entry)
@@ -116,6 +122,9 @@ def import_collection(
                 drop_reason=item.dropReason.strip() if item.status == "dropped" else "",
                 mal_id=item.malId,
                 image_url=item.imageUrl,
+                type=item.type,
+                year=item.year,
+                episodes=item.episodes,
                 created_at=time.time() - index,
             )
         )
@@ -151,6 +160,12 @@ def update_entry(
         entry.notes = changes.notes.strip()
     if "dropReason" in fields and changes.dropReason is not None:
         entry.drop_reason = changes.dropReason.strip()
+    if "type" in fields and changes.type is not None:
+        entry.type = changes.type.strip()
+    if "year" in fields and changes.year is not None:
+        entry.year = changes.year.strip()
+    if "episodes" in fields and changes.episodes is not None:
+        entry.episodes = str(changes.episodes).strip()
     if "rating" in fields:
         entry.rating = changes.rating if entry.status == "watched" else None
     if "watchedAt" in fields:

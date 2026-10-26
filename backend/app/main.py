@@ -13,7 +13,7 @@ ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "ALLOWED_ORIGINS",
-        "http://localhost:8000,http://127.0.0.1:8000,http://localhost:5500,http://127.0.0.1:5500",
+        "http://localhost:8000,http://127.0.0.1:8000,http://0.0.0.0:8000,http://localhost:5500,http://127.0.0.1:5500,http://0.0.0.0:5500",
     ).split(",")
     if origin.strip()
 ]
@@ -43,6 +43,18 @@ async def lifespan(_: FastAPI):
             connection.execute(
                 text("ALTER TABLE anime_entries ADD COLUMN drop_reason TEXT NOT NULL DEFAULT ''")
             )
+        if "type" not in entry_columns:
+            connection.execute(
+                text("ALTER TABLE anime_entries ADD COLUMN type VARCHAR(32) NOT NULL DEFAULT ''")
+            )
+        if "year" not in entry_columns:
+            connection.execute(
+                text("ALTER TABLE anime_entries ADD COLUMN year VARCHAR(16) NOT NULL DEFAULT ''")
+            )
+        if "episodes" not in entry_columns:
+            connection.execute(
+                text("ALTER TABLE anime_entries ADD COLUMN episodes VARCHAR(32) NOT NULL DEFAULT ''")
+            )
     yield
 
 
@@ -52,7 +64,7 @@ app.add_middleware(IPRateLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?$",
     allow_credentials=False,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],

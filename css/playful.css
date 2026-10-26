@@ -277,10 +277,15 @@ body {
   height: 40px;
 }
 .search-box:focus-within,
-.text-input:focus,
-.note-editor:focus {
+.text-input:focus-visible,
+.note-editor:focus-visible {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2);
+}
+.text-input:focus:not(:focus-visible),
+.note-editor:focus:not(:focus-visible) {
+  border-color: var(--border);
+  box-shadow: none;
 }
 
 .anime-grid {
@@ -611,6 +616,14 @@ body {
   border-radius: 24px;
   background: var(--panel);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+.search-dialog,
+.search-dialog[open] {
+  border: none !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  background: var(--bg) !important;
+  box-shadow: none !important;
 }
 .close-button,
 .cancel-button,

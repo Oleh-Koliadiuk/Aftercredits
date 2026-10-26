@@ -1,133 +1,154 @@
 # aftercredits.
 
-A personal anime archive for tracking what you have watched, what you are watching, and what you want to watch next. Search for a title, pick its cover, add a rating or date, and leave a note for yourself.
+A personal anime archive for tracking what you have watched, what you are watching, and what you want to watch next. This project combines a lightweight static frontend with a FastAPI backend to give the user a clean, responsive anime library with authentication, collection management, and AniList-powered search.
 
-## Features
+## Overview
 
-- Create an account and access the same profile from different devices.
-- Update your username and profile avatar from the account page.
-- Keep account credentials and anime collections on the API server instead of the browser.
-- Search AniList for anime titles, posters, release year, format, episode count, and score.
-- Search with English, romanized, native, and catalog synonym titles where available.
-- Track titles as **Watched**, **Watching**, or **Planned**.
-- Add an optional rating from 1 to 10 in half-point increments, a date, and a personal note.
-- Filter the archive by status, search saved titles, and review collection statistics.
-- Switch the interface between English, Ukrainian, and Russian; the language preference stays in the browser.
-- Use the responsive layout, full-screen title search, FAQ, and custom date picker on desktop or mobile.
+`aftercredits.` is designed as a personal anime tracker focused on speed, clarity, and a calm interface. Instead of a heavy app shell, it keeps the UI lightweight and uses a small server for account storage, collection persistence, and secure session management. The app helps users:
+
+- keep an archive of watched, watching, and planned titles;
+- add personal notes, dates, and ratings;
+- search anime metadata from AniList;
+- manage a profile with avatar and email;
+- keep everything synced through a single API-backed account.
+
+The project is built for local development and can also be adapted for deployment with a separate frontend host and production database.
+
+## Main features
+
+- Account registration and login with server-side storage.
+- Session-based authentication using bearer tokens.
+- Profile editing with username, avatar, and optional email.
+- Add, update, and remove anime entries from the personal collection.
+- Track statuses such as Watched, Watching, and Planned.
+- Add a personal rating, date, and note for each title.
+- Search AniList titles and pull metadata like cover, year, format, episodes, and score.
+- Filter entries by status and search through saved titles.
+- Switch the interface language between English, Ukrainian, and Russian.
+- Responsive layout optimized for desktop and mobile screens.
+- Built-in rate limiting and CORS protections on the backend.
+
+## Functional overview
+
+### Authentication
+
+The app supports account creation, sign-in, sign-out, and profile updates. Authentication is handled in the backend and stored through secure session tokens. The frontend keeps the active token in session storage for the current browser tab.
+
+### Collection management
+
+Users can add anime titles to their collection, update their status and metadata, and remove items when needed. The collection API serves all saved entries for the signed-in account and supports import from locally stored browser data.
+
+### Search and metadata
+
+The search flow is powered by AniList. Users can type a title, explore results, and save the selected entry to their collection with metadata automatically attached.
+
+### Profile and account experience
+
+The account page includes user profile details, avatar support, email information, and account state. The design is intentionally minimal but polished, with strong visual emphasis on the user list and collection flow.
+
+## Screenshots
+
+<div align="center">
+  <a href=""><img src="" alt="Collection view" width="220" /></a>
+  <a href=""><img src="" alt="Account page" width="220" /></a>
+  <a href=""><img src="" alt="Login screen" width="220" /></a>
+  <a href=""><img src="" alt="Register screen" width="220" /></a>
+  <a href=""><img src="" alt="Anime details" width="220" /></a>
+  <a href=""><img src="" alt="Search view" width="220" /></a>
+</div>
 
 ## Project structure
 
 ```text
 .
 ├── assets/
-│   └── favicon/                 # Browser, mobile, and web app icons
+│   └── favicon/                 # browser icons and manifest
 ├── backend/
 │   ├── app/
 │   │   ├── api/routes/
-│   │   │   ├── auth.py          # Registration, sign-in, sign-out, current profile
-│   │   │   └── collection.py    # Anime collection API
+│   │   │   ├── auth.py          # login, register, logout, profile
+│   │   │   └── collection.py    # collection CRUD and import flow
 │   │   ├── core/
-│   │   │   ├── database.py      # SQLite/PostgreSQL connection and sessions
-│   │   │   ├── security.py      # Password hashing and session tokens
-│   │   │   └── rate_limit.py    # Per-IP API request limits and temporary blocks
-│   │   ├── main.py              # FastAPI app, CORS, startup
-│   │   ├── models.py            # User, session, and anime database models
-│   │   ├── schemas.py           # Request validation
-│   ├── data/                    # Local SQLite database (created on first run)
-│   └── requirements.txt
+│   │   │   ├── database.py      # database engine and session setup
+│   │   │   ├── security.py      # password hashing and token generation
+│   │   │   └── rate_limit.py    # request limits and temporary blocking
+│   │   ├── main.py              # FastAPI app, startup hooks, and CORS
+│   │   ├── models.py            # database models
+│   │   ├── schemas.py           # validation schemas
+│   │   └── __init__.py
+│   ├── data/                    # local SQLite database folder
+│   ├── requirements.txt
+│   └── .venv/                   # local virtual environment
 ├── css/
-│   ├── main.css                 # CSS entry point and ordered imports
-│   ├── tokens.css               # Theme and global defaults
-│   ├── shell.css                # Sidebar, brand, navigation, top bar
-│   ├── collection.css           # Archive, statistics, filters, cards
-│   ├── dialogs.css              # Notes, FAQ, calendar, shared dialogs
-│   ├── auth.css                 # Sign-in and account creation
-│   ├── motion.css               # Animations and reduced-motion support
-│   ├── responsive.css           # Collection layout breakpoints
-│   ├── search.css               # Full-screen search and add form
-│   └── profile.css              # Account profile and avatar controls
+│   ├── auth.css                 # authentication layout and forms
+│   ├── collection.css           # list, cards, stats, filters
+│   ├── dialogs.css              # modals, notes, FAQ, calendar
+│   ├── main.css                 # entry stylesheet and module order
+│   ├── motion.css               # transitions and motion states
+│   ├── playful.css              # decorative UI styling
+│   ├── profile.css              # profile layout and avatar actions
+│   ├── responsive.css           # responsive behavior
+│   ├── search.css               # anime search overlay and results
+│   ├── shell.css                # sidebar, layout shell, top bar
+│   ├── tokens.css               # design tokens, variables, colors
+│   └── ...
 ├── src/js/
-│   ├── config.js                # Frontend API URL
-│   ├── api.js                   # HTTP client and session token
-│   ├── auth.js                  # Sign-in and one-time legacy account migration
-│   ├── anime-api.js             # AniList title search and result mapping
-│   ├── storage.js               # Collection API client
-│   ├── collection.js            # Client-side collection operations and statistics
-│   ├── i18n.js                  # Translations and saved language preference
-│   ├── view.js                  # DOM rendering
-│   └── app.js                   # UI events and application coordination
-├── .editorconfig
-├── .gitignore
-├── index.html
+│   ├── api.js                   # fetch wrapper and token handling
+│   ├── anime-api.js             # AniList integration and mapping
+│   ├── app.js                   # app bootstrap and UI coordination
+│   ├── auth.js                 # auth UI actions and migration logic
+│   ├── collection.js            # collection logic and statistics
+│   ├── config.js                # API base URL configuration
+│   ├── i18n.js                  # translations and UI texts
+│   ├── storage.js               # browser storage helpers
+│   ├── view.js                  # DOM rendering logic
+│   └── ...
+├── assets/
+│   └── banners/                 # artwork used in the app UI
+├── index.html                  # main application shell
 ├── LICENSE
-└── README.md
-
+├── README.md
+└── todo
 ```
 
-## Run locally
+## Technologies used
 
-Use two terminals. The first starts the API. The second serves the static frontend.
+- HTML5
+- CSS3 with custom design tokens and responsive layout rules
+- Vanilla JavaScript
+- FastAPI (Python)
+- SQLAlchemy ORM
+- SQLite for local development
+- AniList GraphQL API for search and metadata
+- Argon2 password hashing
+- CORS middleware and request rate limiting
+- Session storage in browser for active auth token
 
-```sh
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8001
-```
+## API summary
 
-In another terminal, from the project root:
+| Method | Endpoint                 | Purpose                               |
+| ------ | ------------------------ | ------------------------------------- |
+| POST   | `/api/auth/register`     | Create a new account                  |
+| POST   | `/api/auth/login`        | Sign in and start a session           |
+| POST   | `/api/auth/logout`       | End the active session                |
+| GET    | `/api/auth/me`           | Get current user profile              |
+| PATCH  | `/api/auth/profile`      | Update profile data                   |
+| GET    | `/api/collection`        | Fetch collection items                |
+| POST   | `/api/collection`        | Add a new anime entry                 |
+| PATCH  | `/api/collection/{id}`   | Update an entry                       |
+| DELETE | `/api/collection/{id}`   | Delete an entry                       |
+| POST   | `/api/collection/import` | Import previously stored browser data |
 
-```sh
-python3 -m http.server 8000
-```
+## Notes about the project
 
-Open [http://localhost:8000](http://localhost:8000). The API is available at [http://127.0.0.1:8001/api](http://127.0.0.1:8001/api), and its interactive endpoint documentation is at [http://127.0.0.1:8001/docs](http://127.0.0.1:8001/docs).
+This project intentionally keeps the frontend simple and static while moving the actual user data and auth logic to the backend. That approach makes the app easier to reason about, keeps credentials away from the browser, and makes future deployment smoother.
 
-The API creates `backend/data/aftercredits.db` on its first start. This SQLite database is intended for local development. The account page stores an optional email address, a resized JPEG avatar, and the join date with the user record. Existing databases are upgraded at API startup; the existing account with ID 2 is dated October 20, 2026.
+The codebase is organized around a clear separation:
 
-## API overview
-
-| Method   | Endpoint                 | Purpose                                       |
-| -------- | ------------------------ | --------------------------------------------- |
-| `POST`   | `/api/auth/register`     | Create an account and start a session         |
-| `POST`   | `/api/auth/login`        | Sign in and start a session                   |
-| `POST`   | `/api/auth/logout`       | Revoke the active session                     |
-| `GET`    | `/api/auth/me`           | Return account profile and collection count   |
-| `PATCH`  | `/api/auth/profile`      | Update username, email, and avatar            |
-| `GET`    | `/api/collection`        | Load the current user's anime                 |
-| `POST`   | `/api/collection`        | Add an anime                                  |
-| `PATCH`  | `/api/collection/{id}`   | Update rating, date, status, or note          |
-| `DELETE` | `/api/collection/{id}`   | Remove an anime                               |
-| `POST`   | `/api/collection/import` | Import the previous browser-stored collection |
-
-Collection routes require a bearer session token. Tokens are random, expire after 30 days by default, and are stored hashed in the database. The browser keeps the active token in `sessionStorage` for the current tab session.
-
-The API applies per-process IP limits: 120 API requests per minute triggers a 10-minute block; sign-in and registration allow 10 requests per five minutes before a 15-minute block. Configure the environment variables documented in `backend/.env.example` to change these limits. This helps with basic scripted abuse and credential guessing, but it is not a complete DoS defense: the counters reset on restart and are not shared by multiple workers. Before public deployment, put the API behind a trusted reverse proxy or WAF with network-level protection and use a shared rate-limit store such as Redis across workers. Do not trust client-supplied `X-Forwarded-For` headers; configure proxy trust only for the actual hosting proxy.
-
-## Deploying the frontend and API
-
-Netlify can host the static frontend, but it does not run this FastAPI application. Deploy the `backend/` API separately and connect it to a persistent PostgreSQL database for a public deployment. Then:
-
-1. Set the API's `DATABASE_URL` to the PostgreSQL connection string.
-2. Set `ALLOWED_ORIGINS` to the exact Netlify site origin, such as `https://your-site.netlify.app` (comma-separate any additional allowed origins).
-3. Set `window.AnimeTrackerConfig.apiBaseUrl` in `src/js/config.js` to the API's public HTTPS URL plus `/api`, unless the API is reverse-proxied at the frontend's `/api` path.
-4. Redeploy the frontend after setting the API URL.
-
-For local development, `config.js` automatically points localhost pages to `http://127.0.0.1:8001/api`. API requests use an `Authorization` header, and CORS is restricted to the origins listed in `ALLOWED_ORIGINS`.
-
-The SQLite file is suitable for development only. A deployment needs a persistent database; do not rely on temporary container storage for user collections. Serve the API over HTTPS and keep database credentials out of frontend files and Git.
-
-## Passwords, sessions, and existing local data
-
-Passwords are never saved as readable text. The API hashes passwords with Argon2 before saving them. The browser receives a random session token; the server stores only its hash and revokes it on sign-out. The token is kept in `sessionStorage`, which is accessible to JavaScript running on the page, so the deployed frontend should remain free of untrusted scripts and should use HTTPS.
-
-Existing browser-only accounts and collections can be moved when signing in with the same username and password on the new API. The app verifies the old password locally, imports that profile's entries, and removes the old local account data only after the import succeeds. The interface language remains stored locally in the browser.
-
-## Anime search and external services
-
-Suggestions come from the public AniList GraphQL API and require an internet connection. The app has an eight-second request timeout and displays a retry message if search fails. Poster images load from AniList. Fonts (Manrope and IBM Plex Mono) load from Google Fonts.
+- frontend: interface, interaction, rendering, language, browser state;
+- backend: auth, sessions, data storage, validation, rate limiting;
+- external API: AniList metadata provider.
 
 ## License
 
-This project is distributed under the MIT License. See [`LICENSE`](LICENSE).
+This project is distributed under the MIT License. See [LICENSE](LICENSE).
