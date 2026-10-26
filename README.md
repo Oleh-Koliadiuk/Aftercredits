@@ -49,12 +49,12 @@ The account page includes user profile details, avatar support, email informatio
 ## Screenshots
 
 <div align="center">
-  <a href=""><img src="" alt="Collection view" width="220" /></a>
-  <a href=""><img src="" alt="Account page" width="220" /></a>
-  <a href=""><img src="" alt="Login screen" width="220" /></a>
-  <a href=""><img src="" alt="Register screen" width="220" /></a>
-  <a href=""><img src="" alt="Anime details" width="220" /></a>
-  <a href=""><img src="" alt="Search view" width="220" /></a>
+  <a href="assets/screenshots/colection-view-page.png"><img src="assets/screenshots/colection-view-page.png" alt="Collection view" width="180" /></a>
+  <a href="assets/screenshots/account-page.png"><img src="assets/screenshots/account-page.png" alt="Account page" width="180" /></a>
+  <a href="assets/screenshots/login-page.png"><img src="assets/screenshots/login-page.png" alt="Login page" width="180" /></a>
+  <a href="assets/screenshots/register-page.png"><img src="assets/screenshots/register-page.png" alt="Register page" width="180" /></a>
+  <a href="assets/screenshots/anime-details-page.png"><img src="assets/screenshots/anime-details-page.png" alt="Anime details" width="180" /></a>
+  <a href="assets/screenshots/search-view-page.png"><img src="assets/screenshots/search-view-page.png" alt="Search view" width="180" /></a>
 </div>
 
 ## Project structure
@@ -62,7 +62,10 @@ The account page includes user profile details, avatar support, email informatio
 ```text
 .
 ├── assets/
-│   └── favicon/                 # browser icons and manifest
+│   ├── favicon/                 # browser icons
+│   ├── banners/                 # banners used for UI
+│   ├── screenshots/             # screenshots for README.md
+│   └── site.webmanifest
 ├── backend/
 │   ├── app/
 │   │   ├── api/routes/
@@ -103,8 +106,6 @@ The account page includes user profile details, avatar support, email informatio
 │   ├── storage.js               # browser storage helpers
 │   ├── view.js                  # DOM rendering logic
 │   └── ...
-├── assets/
-│   └── banners/                 # artwork used in the app UI
 ├── index.html                  # main application shell
 ├── LICENSE
 ├── README.md
